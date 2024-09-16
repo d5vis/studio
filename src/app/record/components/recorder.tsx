@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { saveRecordingToLocalStorage } from "@/app/utils/storage";
 
 const Recorder = () => {
   const [recording, setRecording] = useState(false);
@@ -43,29 +44,6 @@ const Recorder = () => {
       if (mediaStream) {
         mediaStream.getTracks().forEach((track) => track.stop());
       }
-    }
-  };
-
-  const convertBlobToBase64 = (blob: Blob) => {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  const saveRecordingToLocalStorage = async (blob: Blob) => {
-    const base64 = await convertBlobToBase64(blob);
-    const recordings = localStorage.getItem("recordings");
-    if (recordings) {
-      const parsedRecordings = JSON.parse(recordings);
-      localStorage.setItem(
-        "recordings",
-        JSON.stringify([...parsedRecordings, base64])
-      );
-    } else {
-      localStorage.setItem("recordings", JSON.stringify([base64]));
     }
   };
 

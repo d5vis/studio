@@ -1,35 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
+import {
+  base64toBlob,
+  getRecordingsFromLocalStorage,
+} from "@/app/utils/storage";
 
 import Card from "../components/card";
 
 const WatchPage = () => {
   const [recordings, setRecordings] = useState<string[]>([]);
   const [mediaBlob, setMediaBlob] = useState<Blob | null>(null);
-
-  const base64toBlob = (base64: string) => {
-    const cleanedBase64 = base64.replace(/^[^,]+,/, "").replace(/\s/g, "");
-    const byteString = atob(cleanedBase64.split(",")[1]);
-    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uintArray = new Uint8Array(arrayBuffer);
-
-    for (let i = 0; i < byteString.length; i++) {
-      uintArray[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([arrayBuffer], { type: mimeString });
-  };
-
-  const getRecordingsFromLocalStorage = () => {
-    const recordings = localStorage.getItem("recordings");
-    if (recordings) {
-      const parsedRecordings = JSON.parse(recordings);
-      setRecordings(parsedRecordings);
-      const lastRecording = parsedRecordings[parsedRecordings.length - 1];
-      setMediaBlob(base64toBlob(lastRecording));
-    }
-  };
 
   const handleDelete = (index: number) => {
     const recordings = localStorage.getItem("recordings");
@@ -45,13 +25,16 @@ const WatchPage = () => {
         return;
       }
       localStorage.setItem("recordings", JSON.stringify(updatedRecordings));
-      setRecordings(updatedRecordings);
       setMediaBlob(updatedRecordings[updatedRecordings.length - 1]);
+      setRecordings(updatedRecordings);
     }
   };
 
   useEffect(() => {
-    getRecordingsFromLocalStorage();
+    const parsedRecordings = getRecordingsFromLocalStorage();
+    setRecordings(parsedRecordings);
+    const lastRecording = parsedRecordings[parsedRecordings.length - 1];
+    setMediaBlob(base64toBlob(lastRecording));
   }, []);
 
   return (
