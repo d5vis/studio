@@ -16,7 +16,7 @@ const WatchPage = () => {
     if (recordings) {
       const parsedRecordings = JSON.parse(recordings);
       const updatedRecordings = parsedRecordings.filter(
-        (_: any, i: number) => i !== index
+        (_: string[], i: number) => i !== index
       );
       if (updatedRecordings.length === 0) {
         localStorage.removeItem("recordings");
@@ -45,7 +45,7 @@ const WatchPage = () => {
             <b>recordings</b>
           </h1>
           {recordings.map((recording, index) => (
-            <div className="flex">
+            <div className="flex" key={index}>
               <button
                 onClick={() => setMediaBlob(base64toBlob(recordings[index]))}
               >

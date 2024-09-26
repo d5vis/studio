@@ -5,8 +5,8 @@ import { saveRecordingToLocalStorage } from "@/app/utils/storage";
 const Recorder = () => {
   const [recording, setRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [mediaBlob, setMediaBlob] = useState<Blob | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const startPreview = async () => {
@@ -14,7 +14,7 @@ const Recorder = () => {
       audio: true,
       video: true,
     });
-    setMediaStream(stream);
+    mediaStreamRef.current = stream;
 
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
@@ -41,8 +41,8 @@ const Recorder = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setRecording(false);
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => track.stop());
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
       }
     }
   };
@@ -56,8 +56,8 @@ const Recorder = () => {
   useEffect(() => {
     startPreview();
     return () => {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => track.stop());
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
