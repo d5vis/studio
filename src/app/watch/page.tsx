@@ -30,6 +30,11 @@ const WatchPage = () => {
     }
   };
 
+  const handleVideoSrc = (base64: string) => {
+    const blob = base64toBlob(base64);
+    return blob ? URL.createObjectURL(blob) : "";
+  };
+
   useEffect(() => {
     const parsedRecordings = getRecordingsFromLocalStorage();
     setRecordings(parsedRecordings);
@@ -55,7 +60,7 @@ const WatchPage = () => {
                 <video
                   key={index}
                   className="w-full h-full rounded-xl aspect-video border-foreground border-2 border-dotted bg-background"
-                  src={URL.createObjectURL(base64toBlob(recording)) || ""}
+                  src={handleVideoSrc(recording)}
                 ></video>
               </button>
               <button
