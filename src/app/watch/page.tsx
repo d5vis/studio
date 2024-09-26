@@ -34,7 +34,10 @@ const WatchPage = () => {
     const parsedRecordings = getRecordingsFromLocalStorage();
     setRecordings(parsedRecordings);
     const lastRecording = parsedRecordings[parsedRecordings.length - 1];
-    setMediaBlob(base64toBlob(lastRecording));
+    const base64 = base64toBlob(lastRecording);
+    if (base64) {
+      setMediaBlob(base64toBlob(lastRecording));
+    }
   }, []);
 
   return (
