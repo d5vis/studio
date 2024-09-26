@@ -30,6 +30,9 @@ export const saveRecordingToLocalStorage = async (blob: Blob) => {
 };
 
 export const base64toBlob = (base64: string) => {
+  if (!base64) {
+    return null;
+  }
   const cleanedBase64 = base64.replace(/^[^,]+,/, "").replace(/\s/g, "");
   const byteString = atob(cleanedBase64.split(",")[1]);
   const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
